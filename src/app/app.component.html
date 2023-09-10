@@ -1,36 +1,55 @@
 <mat-list class="todo-list">
-  <mat-list-item *ngFor="let task of tasks let i = index" class="todo-item">
+  <h3 class="todo-title">to do list</h3>
+  <mat-form-field class="example-form-field">
+    <mat-label>new task</mat-label>
+    <input matInput type="text" [(ngModel)]="newTask">
+    <button *ngIf="newTask" matSuffix mat-icon-button aria-label="Clear" (click)="newTask=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 
+  <button class="added-btn" mat-raised-button (click)="addNewTask()">Added task</button>
 
-    <ng-container *ngIf="editingTaskIndex !== i; else editField">
-      <div class="todo-container">
-        <mat-card-actions>
-          <div class="todo-btns">
-            <div class="button todo-edit" (click)="startEditing(i)">edit</div>
-            <div class="button todo-done" mat-button (click)="markAsCompleted(task)">done</div>
-            <div class="button todo-del" (click)="deleteTask(task)">del</div>
-          </div>
-        </mat-card-actions>
-        <span class="todo-title"> {{ task.text }}</span>
-      </div>
+  <mat-list-item *ngFor="let task of tasks let i = index">
+    <ng-container *ngIf="task.title !== ''">
+      <mat-card class="example-card">
+
+        <ng-container *ngIf="editingTaskIndex !== i; else editField">
+          <mat-card-header>
+            <mat-card-title [class.completed]="task.completed">{{task.title}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-actions>
+            <div class="example-button-row">
+              <mat-checkbox class="example-margin" [(ngModel)]="task.completed">done</mat-checkbox>
+              <button mat-raised-button color="primary" (click)="startEditing(i)">edit</button>
+              <button mat-raised-button color="warn" (click)="deleteTask(task)">del</button>
+            </div>
+          </mat-card-actions>
+        </ng-container>
+
+        <ng-template #editField class="todo-edit-area">
+
+          <mat-card-title>
+
+            <mat-form-field class="example-form-field">
+              <mat-label>task</mat-label>
+              <input matInput type="text" [(ngModel)]="editedTaskText">
+            </mat-form-field>
+          </mat-card-title>
+
+          <mat-card-actions>
+            <div class="example-button-row">
+              <button mat-raised-button color="primary" (click)="saveEditedTask(i)">save</button>
+              <button mat-raised-button color="warn" (click)="cancelEditing()">back</button>
+            </div>
+          </mat-card-actions>
+
+        </ng-template>
+
+        <mat-divider></mat-divider>
+        <mat-card-footer>
+        </mat-card-footer>
+      </mat-card>
     </ng-container>
-
-
-    <ng-template #editField class="todo-edit-area">
-      <div class="todo-container">
-
-        <div class="todo-btns">
-          <div (click)="saveEditedTask(i)" class="button todo-done">save</div>
-          <div (click)="cancelEditing()" class="button todo-del">back</div>
-        </div>
-
-        <div class="edit-input">
-          <input type="text" [(ngModel)]="editedTaskText">
-        </div>
-
-
-      </div>
-    </ng-template>
-
   </mat-list-item>
 </mat-list>
